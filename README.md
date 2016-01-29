@@ -15,19 +15,19 @@ Just drop it into your path, and have a directory $HOME/usr/var/sada , the scrip
 
 All modes of operation are selected by how many arguments you provide the script
 * No arguments - List domains
-.* Example: sada
-.* This lists the key/value domains available
-.* In this version, it ammounts to a ls in $HOME/usr/var/sada
+..* Example: sada
+..* This lists the key/value domains available
+..* In this version, it ammounts to a ls in $HOME/usr/var/sada
 * One argument - List keys
-.* Example: sada phone_numbers
-.* This will be matched to a domain and list all the keys in that domain
-.* Would be similar to ls $HOME/usr/var/sada/phone_numbers/
+..* Example: sada phone_numbers
+..* This will be matched to a domain and list all the keys in that domain
+..* Would be similar to ls $HOME/usr/var/sada/phone_numbers/
 * Two arguments - Read key
 .* Example: sada phone_numbers bob
-.* This will read the current value for that key
-.* If the key is non-existant, it will give you a blank value
-.* Output format is similar to input format
+..* This will read the current value for that key
+..* If the key is non-existant, it will give you a blank value
+..* Output format is similar to input format
 * Three arguments - Write key
-.* Example: sada phone_numbers bob 1-900-876-5309
-.* This will set the key bob to 1-900-876-5309
-.* Any existing value will be appended to an array in the file named history, that you can look at manually
+..* Example: sada phone_numbers bob 1-900-876-5309
+..* This will set the key bob to 1-900-876-5309
+..* Any existing value will be appended to an array in the file named history, that you can look at manually
