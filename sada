@@ -12,7 +12,7 @@ base = os.getenv('HOME') + "/usr/var/sada"
 try:
 	bs=os.stat(base)
 except:
-	os.popen("mkdir " + base)
+	os.popen("mkdir -p " + base)
 try:
 	domain = sys.argv[1]
 except:
