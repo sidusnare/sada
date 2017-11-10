@@ -9,32 +9,41 @@ import commands
 import sys
 
 base = os.getenv('HOME') + "/usr/var/sada"
+
 try:
 	bs=os.stat(base)
 except:
 	os.popen("mkdir -p " + base)
+
+#if we get nothing list all buckets
 try:
-	domain = sys.argv[1]
+	bucket = sys.argv[1]
 except:
 	for dirname in os.listdir(base):
 		print(dirname)
 	exit()
+
+
+#If we are not given a key list all keys in the bucket
 try:
 	key = sys.argv[2].replace("/","_").strip()
 except:
-	for dirname in os.listdir(base + "/" + domain):
+	#If bucket dosent exist, exit silently
+	if not os.path.isdir( base + "/" + bucket):
+		exit()
+	for dirname in os.listdir(base + "/" + bucket):
 		print(dirname)
 	exit()
 	
 
-datafile=base + "/" + domain + "/" + key
+datafile=base + "/" + bucket + "/" + key
 if len(sys.argv) == 4:
 	#Write mode
 	value = sys.argv[3] 
 	try:
-		bs=os.stat(base + "/" + domain)
+		bs=os.stat(base + "/" + bucket)
 	except:
-		os.popen("mkdir " + base + "/" + domain)
+		os.popen("mkdir " + base + "/" + bucket)
 	try:
 		fh=open(datafile)
 		data=json.loads(fh.read())
@@ -59,7 +68,7 @@ if len(sys.argv) == 4:
 	fh=open(datafile, "w")
 	fh.writelines(json.dumps(data, sort_keys=True, indent=4) + "\n" )
 	fh.close()
-	print(domain + " " + key + " " +  value)
+	print(bucket + " " + key + " " +  value)
 
 
 elif len(sys.argv) == 3:
@@ -68,8 +77,8 @@ elif len(sys.argv) == 3:
 		fh=open(datafile)
 		data=json.loads(fh.read())
 		fh.close()
-		print(domain + " " + key + " " +  data['value'])
+		print(bucket + " " + key + " " +  data['value'])
 	except:
-		print(domain + " " + key + "  ")
+		print(bucket + " " + key + "  ")
 else:
 	print("syntax error")
