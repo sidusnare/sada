@@ -71,7 +71,7 @@ if len(sys.argv) == 4:
 	fh=open(datafile, "w")
 	fh.writelines(json.dumps(data, sort_keys=True, indent=4) + "\n" )
 	fh.close()
-	print(bucket + " " + key + " " +  value)
+	print(value)
 
 
 elif len(sys.argv) == 3:
@@ -80,10 +80,10 @@ elif len(sys.argv) == 3:
 		fh=open(datafile)
 		data=json.loads(fh.read())
 		fh.close()
-		print(bucket + " " + key + " " +  data['value'])
+		print(data['value'])
 	except:
                 sys.stderr.write( "No such key: " + key + "\n" )
-		print(bucket + " " + key + "  ")
+		print('')
                 sys.exit(1)
 else:
 	print("syntax error")
