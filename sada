@@ -1,11 +1,10 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #
 #
 
 
 import json
 import os
-import commands
 import sys
 
 base = os.getenv('HOME') + "/usr/var/sada"
@@ -31,8 +30,8 @@ try:
 except:
 	#If bucket dosent exist, exit
 	if not os.path.isdir( base + "/" + bucket):
-                sys.stderr.write( "Unable to find bucket: " + base + "/" + bucket + "\n" )
-                sys.exit(1)
+		sys.stderr.write( "Unable to find bucket: " + base + "/" + bucket + "\n" )
+		sys.exit(1)
 	for dirname in os.listdir(base + "/" + bucket):
 		print(dirname)
 	exit()
@@ -46,7 +45,7 @@ if len(sys.argv) == 4:
 		bs=os.stat(base + "/" + bucket)
 	except:
 		os.popen("mkdir " + base + "/" + bucket)
-                sys.stderr.write( "Creating new bucket: " + bucket + "\n" )
+		sys.stderr.write( "Creating new bucket: " + bucket + "\n" )
 	try:
 		fh=open(datafile)
 		data=json.loads(fh.read())
@@ -71,7 +70,7 @@ if len(sys.argv) == 4:
 	fh=open(datafile, "w")
 	fh.writelines(json.dumps(data, sort_keys=True, indent=4) + "\n" )
 	fh.close()
-	print(bucket + " " + key + " " +  value)
+	print(bucket + " " + key + " " + value)
 
 
 elif len(sys.argv) == 3:
@@ -80,10 +79,10 @@ elif len(sys.argv) == 3:
 		fh=open(datafile)
 		data=json.loads(fh.read())
 		fh.close()
-		print(bucket + " " + key + " " +  data['value'])
+		print(bucket + " " + key + " " + data['value'])
 	except:
-                sys.stderr.write( "No such key: " + key + "\n" )
-		print(bucket + " " + key + "  ")
-                sys.exit(1)
+		sys.stderr.write( "No such key: " + key + "\n" )
+		print(bucket + " " + key + " ")
+		sys.exit(1)
 else:
 	print("syntax error")
