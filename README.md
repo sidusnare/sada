@@ -1,11 +1,11 @@
 # sada
-ScAvengeDAta: Simple key value store for use when scripting.
+ScAvenge DAta: Simple key value store for use when scripting.
 Backended by simple JSON files
 
 ## Instalation
 
 ### Requirements
-* Python 2
+* Python 3
 * UNIX-ish OS ?
 
 ### Installing
