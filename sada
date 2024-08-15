@@ -2,7 +2,7 @@
 #
 #
 
-
+"""This is a simple JSON backed domained key value store"""
 import json
 import os
 import sys
@@ -10,79 +10,72 @@ import sys
 base = os.getenv('HOME') + "/usr/var/sada"
 
 try:
-	bs=os.stat(base)
-except:
-	os.popen("mkdir -p " + base)
+    bs=os.stat(base)
+except FileNotFoundError:
+    os.popen("mkdir -p " + base)
 
 #if we get nothing list all buckets
 try:
-	bucket = sys.argv[1].replace("/","_").strip()
-except:
-	for dirname in os.listdir(base):
-		print(dirname)
-	exit()
+    bucket = sys.argv[1].replace("/","_").strip()
+except IndexError:
+    for dirname in os.listdir(base):
+        print(dirname)
+    sys.exit(1)
 if sys.argv[1] != bucket:
-    sys.stderr.write( "Illegal character '/' in bucket name, remapping '/' to '_': " + bucket + "\n" )
+    sys.stderr.write( "Illegal character '/' in bucket, remapping '/' to '_': " + bucket + "\n" )
 
 #If we are not given a key, list all keys in the bucket
 try:
-	key = sys.argv[2].replace("/","_").strip()
-except:
-	#If bucket dosent exist, exit
-	if not os.path.isdir( base + "/" + bucket):
-		sys.stderr.write( "Unable to find bucket: " + base + "/" + bucket + "\n" )
-		sys.exit(1)
-	for dirname in os.listdir(base + "/" + bucket):
-		print(dirname)
-	exit()
-	
+    key = sys.argv[2].replace("/","_").strip()
+except IndexError:
+    #If bucket dosent exist, exit
+    if not os.path.isdir( base + "/" + bucket):
+        sys.stderr.write( "Unable to find bucket: " + base + "/" + bucket + "\n" )
+        sys.exit(1)
+    for dirname in os.listdir(base + "/" + bucket):
+        print(dirname)
+    sys.exit(1)
 
 datafile=base + "/" + bucket + "/" + key
 if len(sys.argv) == 4:
-	#Write mode
-	value = sys.argv[3] 
-	try:
-		bs=os.stat(base + "/" + bucket)
-	except:
-		os.popen("mkdir " + base + "/" + bucket)
-		sys.stderr.write( "Creating new bucket: " + bucket + "\n" )
-	try:
-		fh=open(datafile)
-		data=json.loads(fh.read())
-		fh.close()
-	except:
-		data={}
-	try:
-		if data['value'] != value:
-			try:
-				#Move currenty value to front of history
-				data['history'].insert(0, data['value'])
-				data['value'] = value
-			except:
-				#If we throw here we need to init history
-				data['history'] = []
-				data['history'].insert(0, data['value'])
-				data['value'] = value
-	except:
-		#If we throw here we need to initalize the data
-		data['value'] = value
-		data['history'] = []
-	fh=open(datafile, "w")
-	fh.writelines(json.dumps(data, sort_keys=True, indent=4) + "\n" )
-	fh.close()
-	print(bucket + " " + key + " " + value)
+    #Write mode
+    value = sys.argv[3]
+    try:
+        bs=os.stat(base + "/" + bucket)
+    except FileNotFoundError:
+        os.popen("mkdir " + base + "/" + bucket)
+        sys.stderr.write( "Creating new bucket: " + bucket + "\n" )
+    try:
+        with open(datafile, encoding="utf-8") as file:
+            fh=file.read()
+        data=json.loads(fh)
+    except FileNotFoundError:
+        data={}
+    try:
+        if data['value'] != value:
+            data['history'].insert(0, data['value'])
+            data['value'] = value
+    except KeyError:
+        #If we throw here we need to initalize the data
+        data['value'] = value
+        data['history'] = []
+    with open(datafile, "w", encoding="utf-8") as file:
+        fh=file.read()
+    fh.writelines(json.dumps(data, sort_keys=True, indent=4) + "\n" )
+    fh.close()
+    print(bucket + " " + key + " " + value)
 
 
 elif len(sys.argv) == 3:
-	#read mode
-	try:
-		fh=open(datafile)
-		data=json.loads(fh.read())
-		fh.close()
-		print(bucket + " " + key + " " + data['value'])
-	except:
-		sys.stderr.write( "No such key: " + key + "\n" )
-		print(bucket + " " + key + " ")
-		sys.exit(1)
+    #read mode
+    try:
+        with open(datafile, encoding="utf-8") as file:
+            fh=file.read()
+        data=json.loads(fh)
+        print(bucket + " " + key + " " + data['value'])
+    except FileNotFoundError:
+        sys.stderr.write( "No such key: " + key + "\n" )
+        print(bucket + " " + key + " ")
+        sys.exit(1)
 else:
-	print("syntax error")
+    print("syntax error")
